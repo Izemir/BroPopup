@@ -12,7 +12,9 @@ namespace Assets.Scripts
     {
         List<Player> players = new List<Player>();
 
-        Player ourPlayer;
+        public Player ourPlayer { get; set; }
+
+        public int ourPlayerPlace { get; set; }
 
         public ReadJson()
         {
@@ -34,11 +36,12 @@ namespace Assets.Scripts
             players.Sort(SortByScore);
 
 
-            foreach (Player pl in players)
+            for (int i=0;i<players.Count;i++)
             {
-                if (pl.id == id)
+                if (players[i].id == id)
                 {
-                    ourPlayer = pl;
+                    ourPlayer = players[i];
+                    ourPlayerPlace = i+1;
                     break;
                 }
             }

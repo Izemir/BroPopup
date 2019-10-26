@@ -25,5 +25,10 @@ namespace Assets.Scripts
         {
             return "Player:" + firstName + " " + lastName + ", id: " + id + ", score:" + score;
         }
+
+        public String nameToString()
+        {
+            return firstName + " " + lastName;
+        }
     }
 }

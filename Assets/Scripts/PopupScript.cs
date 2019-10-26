@@ -17,42 +17,92 @@ public class PopupScript : MonoBehaviour
 
     public Image[] popups;
 
-    public Text[] texts;
+    public Text[] places;
 
-    List<Player> players2 = new List<Player>();
+    public Text[] names;
 
-    System.Random rand = new System.Random(DateTime.Now.Second);
+    public Text[] scores;
+
+
 
 
     public void StartPopup()
     {
+
+        List<Player> players = new List<Player>();
+
+        WriteJson w = new WriteJson();
+
+        w.write(10000);
+
+        ReadJson r = new ReadJson();
+
+        players = r.read(33);
+
         closeButton.SetActive(true);
 
         openButton.SetActive(false);
 
-        popups[4].enabled = true;
+        int a = 0;
 
-        foreach (Text text in texts)
+        switch (players.Count)
         {
-            text.enabled = true;
+            case 1:
+                popups[0].enabled = true;
+                a = 0;
+                break;
+            case 2:
+                popups[1].enabled = true;
+                a = 1;
+                break;
+            case 3:
+                popups[2].enabled = true;
+                a = 2;
+                break;
+            case 4:
+                popups[3].enabled = true;
+                a = 3;
+                break;
+            default:
+                popups[4].enabled = true;
+                a = 4;
+                break;
         }
 
-        WriteJson w = new WriteJson();
-
-        w.write();
-
-        ReadJson r = new ReadJson();
-
-        players2 = r.read(33);
-
-        for (int i = 0; i < 5 && i < players2.Count; i++)
+        for(int i = 0; i <= a; i++)
         {
-            Debug.Log(players2[i].toString());
+            
+            names[i].text = players[i].nameToString();
+            scores[i].text = players[i].score.ToString();
+
+            places[i].enabled = true;
+            names[i].enabled = true;
+            scores[i].enabled = true;
+        }
+
+        closeButton.SetActive(true);
+
+        openButton.SetActive(false);
+
+        places[5].text = r.ourPlayerPlace.ToString();
+        names[5].text = r.ourPlayer.nameToString();
+        scores[5].text = r.ourPlayer.score.ToString();
+
+        places[5].enabled = true;
+        names[5].enabled = true;
+        scores[5].enabled = true;
+
+
+
+        /*
+        for (int i = 0; i < 5 && i < players.Count; i++)
+        {
+            Debug.Log(players[i].toString());
         }
 
         Debug.Log("----");
 
-        foreach (Player pl in players2)
+        foreach (Player pl in players)
         {
             if (pl.id == 33)
             {
@@ -60,13 +110,23 @@ public class PopupScript : MonoBehaviour
                 break;
             }
         }
+        */
 
 
     }
 
     public void EndPopup()
     {
-        foreach (Text text in texts)
+        
+        foreach (Text text in places)
+        {
+            text.enabled = false;
+        }
+        foreach (Text text in names)
+        {
+            text.enabled = false;
+        }
+        foreach (Text text in scores)
         {
             text.enabled = false;
         }
@@ -78,39 +138,10 @@ public class PopupScript : MonoBehaviour
         closeButton.SetActive(false);
 
         openButton.SetActive(true);
-    }
-
-    public void LoadJson()
-    {
-
-        using (StreamReader r = new StreamReader("players.json"))
-        {
-
-            string json = r.ReadLine();
-            players2 = JsonConvert.DeserializeObject<List<Player>>(json);
-
-            players2.Sort(SortByScore);
-            
-        }
-
-        foreach (var player in players2)
-        {
-            Debug.Log(player.toString());
-        }
         
-
     }
 
-    private int SortByScore(Player x, Player y)
-    {
-        if (x.score == 0 || y.score == 0)
-        {
-            return 0;
-        }
-
-        // CompareTo() method 
-        return -1 * x.score.CompareTo(y.score);
-    }
+    
 
 
 }

@@ -18,7 +18,7 @@ namespace Assets.Scripts
 
         Dictionary dict = new Dictionary();
 
-        int maxScore = 100;
+        int maxScore = 10000;
 
 
 
@@ -27,9 +27,9 @@ namespace Assets.Scripts
 
         }
 
-        public void write()
+        public void write(int playersCount)
         {
-            GeneratePlayers(10000);
+            GeneratePlayers(playersCount);
 
             Player v = new Player(33, "Broccoli", "Games", rand.Next(maxScore + 1));
 
