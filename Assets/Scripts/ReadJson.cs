@@ -1,62 +1,78 @@
 ﻿using Newtonsoft.Json;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Diagnostics;
+
+
 
 namespace Assets.Scripts
 {
+    /// 
+    /// Необходим для чтения списка игроков из json-файла,
+    /// сортировки списка и высленения нашего игрока.
+    ///
     class ReadJson
     {
         List<Player> players = new List<Player>();
 
-        public Player ourPlayer { get; set; }
+        public Player ourPlayer { get; set; } // наш игрок
 
-        public int ourPlayerPlace { get; set; }
+        public int ourPlayerPlace { get; set; } // место нашего игрока
 
         public ReadJson()
         {
 
         }
 
-        public List<Player> read(int id)
+        /*
+         * Чтение файла, сортировка, перебор списка игроков
+         * для нахождения нашего игрока и его места в списке.
+         */
+        public List<Player> Read(int id)
         {
 
-            using (StreamReader r = new StreamReader("players.json"))
+            try
             {
-
-                string json = r.ReadLine();
-                players = JsonConvert.DeserializeObject<List<Player>>(json);
-
-
-            }
-
-            players.Sort(SortByScore);
-
-
-            for (int i=0;i<players.Count;i++)
-            {
-                if (players[i].id == id)
+                using (StreamReader r = new StreamReader("players.json"))
                 {
-                    ourPlayer = players[i];
-                    ourPlayerPlace = i+1;
-                    break;
+
+                    string json = r.ReadLine();
+                    players = JsonConvert.DeserializeObject<List<Player>>(json);
+
+
                 }
-            }
+
+                players.Sort(SortByScore);
+
+
+                for (int i = 0; i < players.Count; i++)
+                {
+                    if (players[i].id == id)
+                    {
+                        ourPlayer = players[i];
+                        ourPlayerPlace = i + 1;
+                        break;
+                    }
+                }
+            }            
+            catch (FileNotFoundException ex) { Debug.WriteLine("JSON-файл не найден"); }
+            
+
+            
 
             return players;
         }
 
+        /*
+         * Сортировщик, от большего к меньшему.
+         */
         private int SortByScore(Player x, Player y)
         {
             if (x.score == 0 || y.score == 0)
             {
                 return 0;
             }
-
-            // CompareTo() method 
+            
             return -1 * x.score.CompareTo(y.score);
         }
     }

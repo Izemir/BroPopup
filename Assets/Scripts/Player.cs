@@ -1,11 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Assets.Scripts
 {
+    /// 
+    /// Класс игрока, в нем хранится вся информация об игроке.
+    ///
     class Player
     {
         public int id { get; set; }
@@ -21,11 +20,17 @@ namespace Assets.Scripts
             this.score = score;
         }
 
+        /*
+         * Созданная для отладки функция, возвращающая строкой информацию по игроку.
+         */
         public String toString()
         {
             return "Player:" + firstName + " " + lastName + ", id: " + id + ", score:" + score;
         }
 
+        /*
+         * Возвращает имя и фамилию игрока.
+         */
         public String nameToString()
         {
             return firstName + " " + lastName;

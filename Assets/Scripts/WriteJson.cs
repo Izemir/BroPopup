@@ -2,43 +2,50 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Assets.Scripts
 {
+    /// 
+    /// Необходим для генерации списка игроков и
+    /// последующей записи их в файл.
+    ///
     class WriteJson
     {
         List<Player> players = new List<Player>();
 
         Random rand = new Random(DateTime.Now.Second);
 
-        Boolean sex = true;
+        Boolean sex = true; // пол генерируемого игрока
 
         Dictionary dict = new Dictionary();
 
-        int maxScore = 10000;
+        int maxScore = 10000; // максимум генерируемых очков
 
+        int ourPlayerId = 33; // идентификатор нашего игрока
 
-
+        
         public WriteJson()
         {
 
         }
 
-        public void write(int playersCount)
+        /*
+         * Запускает генерацию игроков, записывая их в список, также
+         * добавляет в список нашего игрока Broccoli Games.
+         * Далее записывает игроков в json-файл.
+         */
+        public void Write(int playersCount)
         {
             GeneratePlayers(playersCount);
 
-            Player v = new Player(33, "Broccoli", "Games", rand.Next(maxScore + 1));
+            Player v = new Player(ourPlayerId, "Broccoli", "Games", rand.Next(maxScore + 1));
 
             players.Add(v);
 
             using (StreamWriter file = File.CreateText(@"players.json"))
             {
                 JsonSerializer serializer = new JsonSerializer();
-                //serialize object directly into file stream
                 serializer.Serialize(file, players);
             }
 
@@ -46,6 +53,9 @@ namespace Assets.Scripts
 
         }
 
+        /*
+         * Генерация имени.
+         */
         public String RandomFirstName()
         {
 
@@ -64,6 +74,9 @@ namespace Assets.Scripts
 
         }
 
+        /*
+         * Генерация фамилии.
+         */
         public String RandomLastName()
         {
 
@@ -79,12 +92,16 @@ namespace Assets.Scripts
 
         }
 
+        /*
+         * Генерирует необходимое кол-во игроков (int end),
+         * учитывая, что id нашего игрока уже занято.
+         */
         public void GeneratePlayers(int end)
         {
 
             for (int i = 1; i < end; i++)
             {
-                if (i == 33) i++;
+                if (i == ourPlayerId) i++;
                 Player player = new Player(i, RandomFirstName(), RandomLastName(), rand.Next(maxScore + 1));
                 players.Add(player);
 

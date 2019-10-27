@@ -1,11 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
+﻿
 namespace Assets.Scripts
 {
+    /// 
+    /// Словарь имен и фамилий, созданный помочь генерировать имена игроков.
+    ///
     class Dictionary
     {
         public string[] MaleNames { get; }

@@ -1,31 +1,38 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using Newtonsoft.Json;
 using Assets.Scripts;
 
+
+/// 
+/// Основный скрипт, взаимодействующий с Unity. Считывает значения с UI, 
+/// запускает подпрограммы WriteJson и ReadJson, 
+/// "включает" и "выключает" элементы UI. 
+///
 public class PopupScript : MonoBehaviour
 {
 
 
 
-    public GameObject openButton;
+    public GameObject openButton; // кнопка "Открыть статистику"
     
-    public GameObject closeButton;
+    public GameObject closeButton; // кнопка "Закрыть"
 
-    public Image[] popups;
+    public Image[] popups; // варианты попапа для разного кол-ва игроков
 
-    public Text[] places;
+    public Text[] places; // места игроков
 
-    public Text[] names;
+    public Text[] names; // имена игроков
 
-    public Text[] scores;
-
-
+    public Text[] scores; // набранные очки в ходе турнира
 
 
+    /*
+     * Функция, активируемая при нажатии кнопки "Открыть статистику".
+     * Запускает генерацию json-файла с игроками, потом считывает информацию из файла.
+     * В зависимости от кол-ва игроков (1-4 или больше 4), выводит информацию 
+     * о результатах на экран, скрывает кнопку открытия попапа и показывает кнопку закрытия.
+     */
     public void StartPopup()
     {
 
@@ -33,88 +40,76 @@ public class PopupScript : MonoBehaviour
 
         WriteJson w = new WriteJson();
 
-        w.write(10000);
+        w.Write(10000); // кол-во игроков - 10000 
 
         ReadJson r = new ReadJson();
 
-        players = r.read(33);
+        players = r.Read(33); // передаем id нашего игрока в считывающую программу
 
-        closeButton.SetActive(true);
-
-        openButton.SetActive(false);
-
-        int a = 0;
-
-        switch (players.Count)
+        if (players.Count == 0)
         {
-            case 1:
-                popups[0].enabled = true;
-                a = 0;
-                break;
-            case 2:
-                popups[1].enabled = true;
-                a = 1;
-                break;
-            case 3:
-                popups[2].enabled = true;
-                a = 2;
-                break;
-            case 4:
-                popups[3].enabled = true;
-                a = 3;
-                break;
-            default:
-                popups[4].enabled = true;
-                a = 4;
-                break;
+            Debug.Log("JSON-файл не найден");
         }
-
-        for(int i = 0; i <= a; i++)
+        else
         {
-            
-            names[i].text = players[i].nameToString();
-            scores[i].text = players[i].score.ToString();
+            int playersCount = 0;
 
-            places[i].enabled = true;
-            names[i].enabled = true;
-            scores[i].enabled = true;
-        }
-
-        closeButton.SetActive(true);
-
-        openButton.SetActive(false);
-
-        places[5].text = r.ourPlayerPlace.ToString();
-        names[5].text = r.ourPlayer.nameToString();
-        scores[5].text = r.ourPlayer.score.ToString();
-
-        places[5].enabled = true;
-        names[5].enabled = true;
-        scores[5].enabled = true;
-
-
-
-        /*
-        for (int i = 0; i < 5 && i < players.Count; i++)
-        {
-            Debug.Log(players[i].toString());
-        }
-
-        Debug.Log("----");
-
-        foreach (Player pl in players)
-        {
-            if (pl.id == 33)
+            switch (players.Count)
             {
-                Debug.Log(pl.toString());
-                break;
+                case 1:
+                    playersCount = 0;
+                    break;
+                case 2:
+                    playersCount = 1;
+                    break;
+                case 3:
+                    playersCount = 2;
+                    break;
+                case 4:
+                    playersCount = 3;
+                    break;
+                default:
+                    playersCount = 4;
+                    break;
             }
+
+            popups[playersCount].enabled = true;
+
+            for (int i = 0; i <= playersCount; i++)
+            {
+
+                names[i].text = players[i].nameToString();
+                scores[i].text = players[i].score.ToString();
+
+                places[i].enabled = true;
+                names[i].enabled = true;
+                scores[i].enabled = true;
+            }
+
+            closeButton.SetActive(true);
+
+            openButton.SetActive(false);
+
+            /*
+             *  Все изменяемые текстовые элементы в UI, отображающие информацию 
+             *  об игроке, можно найти в массивах под индексом 5.
+             */
+            places[5].text = r.ourPlayerPlace.ToString();
+            names[5].text = r.ourPlayer.nameToString();
+            scores[5].text = r.ourPlayer.score.ToString();
+
+            places[5].enabled = true;
+            names[5].enabled = true;
+            scores[5].enabled = true;
+
         }
-        */
-
-
     }
 
+    /*
+     * Функция, активируемая при нажатии кнопки "Закрыть".
+     * Скрывает всю информацию попапа, возвращает UI в изначальное
+     * положение.
+     */
     public void EndPopup()
     {
         
